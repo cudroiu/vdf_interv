@@ -2,9 +2,9 @@
 Module data_structures/network_collections.py
 """
 
-from sys import version_info
 import ipaddress
 from .entry import Entry
+from .helpers import validate_address
 
 
 class NetworkCollection:
@@ -25,30 +25,11 @@ class NetworkCollection:
         """
         Removes invalid objects from the entries list.
         """
-        self.entries[:] = [e for e in self.entries if self.validate_address(e)]
-
-    def validate_address(self, entry):
-        """
-        This function validates a particular Entry object.
-        It returns True if the address is valid and False otherwise.
-        """
-        result = True
-        try:
-            if version_info.major == 2:
-                addr = ipaddress.IPv4Address(entry.address.decode())
-            elif version_info.major == 3:
-                addr = ipaddress.IPv4Address(entry.address)
-            if addr not in self.ipv4_network:
-                result = False
-        except Exception:
-            result = False
-
-        return result
+        self.entries[:] = [e for e in self.entries if validate_address(e.address, self.ipv4_network)]
 
     def sort_records(self):
         """
         Sorts the list of associated entries in ascending order.
         DO NOT change this method, make the changes in entry.py :)
         """
-
-        self.entries = sorted(self.entries, key=lambda entry: entry.address)
+        self.entries = sorted(self.entries)

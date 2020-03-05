@@ -50,30 +50,11 @@ def main():
     ]
 
     for d in datacenters:
-        print("Datacenter: {}".format(d.name))
-        for c in d.clusters:
-            print("Cluster: {}".format(c.name))
-            for n in c.networks:
-                print("IPv4 Network: {}".format(n.ipv4_network))
-                for e in n.entries:
-                    print("Address: {}".format(e.address))
-
-    for d in datacenters:
         d.remove_invalid_clusters()
         for c in d.clusters:
             for n in c.networks:
                 n.remove_invalid_records()
                 n.sort_records()
-    print('\n\n\n')
-
-    for d in datacenters:
-        print("Datacenter: {}".format(d.name))
-        for c in d.clusters:
-            print("Cluster: {}".format(c.name))
-            for n in c.networks:
-                print("IPv4 Network: {}".format(n.ipv4_network))
-                for e in n.entries:
-                    print("Address: {}".format(e.address))
 
 
 if __name__ == '__main__':

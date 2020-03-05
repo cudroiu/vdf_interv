@@ -3,6 +3,7 @@ data_structures.entry.py
 """
 
 import datetime
+from .helpers import str_to_ipaddress
 
 
 class Entry:
@@ -20,3 +21,9 @@ class Entry:
         self.address = str(address)
         self.available = True if available else False
         self.last_used = datetime.datetime.strptime(last_used, '%d/%m/%y %H:%M:%S')
+
+    def __lt__(self, other):
+        """
+        This function compares 2 ip addresses by their decimal values.
+        """
+        return int(str_to_ipaddress(self.address)) < int(str_to_ipaddress(other.address))
