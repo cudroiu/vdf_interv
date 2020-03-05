@@ -19,13 +19,13 @@ class NetworkCollection:
         self.entries -> list(Entry)
         """
         self.ipv4_network = ipaddress.IPv4Network(ipv4_network)
-        self.entries = [Entry(e["address"], e["available"], e["last_used"]) for e in raw_entry_list]
+        self.entries = EntryIterator(raw_entry_list)
 
     def remove_invalid_records(self):
         """
         Removes invalid objects from the entries list.
         """
-        self.entries[:] = [e for e in self.entries if validate_address(e.address, self.ipv4_network)]
+        self.entries = ValidEntryIterator(self.entries, self.ipv4_network)
 
     def sort_records(self):
         """
@@ -33,3 +33,24 @@ class NetworkCollection:
         DO NOT change this method, make the changes in entry.py :)
         """
         self.entries = sorted(self.entries)
+
+
+class EntryIterator(object):
+    def __init__(self, input_list):
+        self.input_list = input_list
+
+    def __iter__(self):
+        for entry in self.input_list:
+            yield Entry(entry["address"], entry["available"], entry["last_used"])
+
+
+class ValidEntryIterator(object):
+    def __init__(self, it, ipv4_network):
+        self.it = it
+        self.ipv4_network = ipv4_network
+
+    def __iter__(self):
+        for entry in self.it:
+            if validate_address(entry.address, self.ipv4_network):
+                yield entry
+

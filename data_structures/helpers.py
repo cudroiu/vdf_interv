@@ -44,3 +44,10 @@ def validate_cluster_name(cluster_name, datacenter_name):
         result = False
 
     return result
+
+class MyIterator(object):
+    def __init__(self, input_list):
+        self.input_list = input_list
+    def __iter__(self):
+        for el in self.input_list:
+            yield el

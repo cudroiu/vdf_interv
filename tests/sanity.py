@@ -31,7 +31,7 @@ class TestMockIo(unittest.TestCase):
             for cluster in datacenter.clusters:
                 for network in cluster.networks:
                     network.remove_invalid_records()
-                    valid_ip = len(network.entries)
+                    valid_ip = len(list(network.entries))
                     total_valid_ip += valid_ip
         self.assertEqual(total_valid_ip, 16)
 

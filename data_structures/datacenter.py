@@ -17,11 +17,30 @@ class Datacenter:
         self.clusters -> list(Cluster)
         """
         self.name = str(name)
-        self.clusters = [Cluster(k, v["networks"], v["security_level"])
-                         for k, v in cluster_dict.items()]
+        self.clusters = ClusterIterator(cluster_dict)
 
     def remove_invalid_clusters(self):
         """
         Removes invalid objects from the clusters list.
         """
-        self.clusters[:] = [c for c in self.clusters if validate_cluster_name(c.name, self.name)]
+        self.clusters = ValidClusterIterator(self.clusters, self.name)
+
+
+class ClusterIterator(object):
+    def __init__(self, input_dict):
+        self.input_dict = input_dict
+
+    def __iter__(self):
+        for cluster, data in self.input_dict.items():
+            yield Cluster(cluster, data["networks"], data["security_level"])
+
+
+class ValidClusterIterator(object):
+    def __init__(self, it, dc_name):
+        self.it = it
+        self.dc_name = dc_name
+
+    def __iter__(self):
+        for cluster in self.it:
+            if validate_cluster_name(cluster.name, self.dc_name):
+                yield cluster

@@ -19,5 +19,5 @@ class Cluster:
         """
         self.name = str(name)
         self.security_level = int(security_level)
-        self.networks = [NetworkCollection(network, raw_entry_list)
-                         for network, raw_entry_list in network_dict.items()]
+        self.networks = (NetworkCollection(network, raw_entry_list)
+                         for network, raw_entry_list in network_dict.items())
