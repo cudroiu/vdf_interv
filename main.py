@@ -38,23 +38,33 @@ def main():
     """
     Main entry to our program.
     """
-
+    
+    print("Retrieving data from API")
     data = get_data(URL)
 
     if not data:
         raise ValueError('No data to process')
 
+    print("Successfully retrieved data from API")
+    print("Instantiating elements")
     datacenters = [
         Datacenter(key, value)
         for key, value in data.items()
     ]
+    print("Successfully instantiated elements")
 
     for d in datacenters:
+        print("Removing invalid clusters from datacenter {}".format(d.name))
         d.remove_invalid_clusters()
+        print("Found {} valid clusters: {}".format(str(len(d.clusters)), ', '.join([cluster.name for cluster in d.clusters])))
         for c in d.clusters:
             for n in c.networks:
+                print("Removing invalid records for network {}, cluster {}".format(str(n.ipv4_network), c.name))
                 n.remove_invalid_records()
+                print("Found {} valid records: {}".format(str(len(n.entries)), ', '.join([e.address for e in n.entries])))
+                print("Sorting records by IPv4 address")
                 n.sort_records()
+                print("Successfully sorted records by IPv4 address: {}".format(', '.join([e.address for e in n.entries])))
 
 
 if __name__ == '__main__':
